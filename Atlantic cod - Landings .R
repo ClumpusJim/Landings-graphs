@@ -11,7 +11,7 @@ assessmentKeys <- findAssessmentKey("cod", 2020)
 # cod <- data.frame(cod)
 
 #Find out which stock belongs to which key
-head(data.frame(getStockDownloadData(14014))) %>% select("AssessmentKey", "StockDescription")
+#head(data.frame(getStockDownloadData(14014))) %>% select("AssessmentKey", "StockDescription")
 
 cod_GRE_West_Ins <- data.frame(getStockDownloadData(15621)) %>% 
   mutate(ICES_Areas = as.character(ICES_Areas)) %>% 
@@ -148,14 +148,8 @@ cod <- bind_rows(cod_GRE_West_Ins,
   mutate(Stock = as.factor(Stock)) %>% 
   mutate(fct_reorder(Stock, Landings, .fun= sum))
 
+#Total landings for time period
 cod %>% group_by(Stock) %>% summarise(sum = sum(Landings))
-
-levels(cod$Stock)
-
-pal1 <-
-c("#0e92ff", "#289cef", "#3da4e2", "#51acd6", "#63b2cb", 
-  "#73b9c1", "#83bfb8", "#92c4ae", "#a1caa5", "#afcf9d", 
-  "#bdd594", "#cbda8c", "#d8df84", "#e5e47c", "#f2e974", "#ffee6c")  
 
 cod_g1 <- cod %>% filter(Year < 2022) %>% 
   
@@ -177,18 +171,14 @@ ggplot(aes(Year, y =Landings/1000, fill = fct_reorder(Stock, Landings, .fun = su
         panel.background = element_blank())
 cod_g1
 
-jpeg("e:/Documents/lumpfish/wikipedia/Atlantic cod/Atlantic cod landings east.jpeg", width = 1400, height = 700)
+jpeg("Atlantic cod landings east.jpeg", width = 1400, height = 700)
 cod_g1
 dev.off()
 
-northern <- read.csv("e:/Documents/lumpfish/wikipedia/Atlantic cod/Northern cod catches.csv", fileEncoding="UTF-8-BOM")
-cod_3M <- read.csv("e:/Documents/lumpfish/wikipedia/Atlantic cod/cod catches.csv", fileEncoding="UTF-8-BOM")
+northern <- read.csv("~Data/Atlantic cod - Northern cod catches.csv", fileEncoding="UTF-8-BOM") #from 10.1093/icesjms/fsab153
+cod_3M <- read.csv("~Data/Atlantic cod - Eastern cod landings.csv", fileEncoding="UTF-8-BOM") #from NAFO
 
 cod_west <- bind_rows(northern, cod_3M)
-
-View(
-cod_west %>% group_by(Year) %>% summarise(sum = sum(Landings))
-)
 
 cod_g2 <- 
   cod_west %>% filter(Year < 2020) %>% mutate(Area = as.factor(Area)) %>% 
@@ -211,8 +201,6 @@ ggplot(aes(Year, Landings/1000, fill = fct_reorder(Area, Landings, .fun = sum)))
         plot.margin = unit(c(0.2, 1.0, 0.2, 0.2), "cm"),
         panel.background = element_blank())
 cod_g2
-
-
 
 jpeg("e:/Documents/lumpfish/wikipedia/Atlantic cod/Atlantic cod landings west.jpeg", width = 1400, height = 700)
 cod_g2
