@@ -1,5 +1,6 @@
 library(icesSAG)
 library(tidyverse)
+library(patchwork)
 
 #Get the assesment keys for the year
 assessmentKeys <- findAssessmentKey("cod", 2020)
@@ -173,6 +174,31 @@ cod_g1
 
 jpeg("Atlantic cod landings east.jpeg", width = 1400, height = 700)
 cod_g1
+dev.off()
+
+#Historical data from Holm ey al. 2021 https://doi.org/10.1111/faf.12598
+historical_cod <- read.csv("Data/Atlantic cod - East Atlantic 1520-1790.csv", fileEncoding = "UTF-8-BOM")
+
+hist <-
+ggplot(historical_cod, aes(year, y =catch/1000))+
+  geom_line(colour="black", width = 1)+
+  scale_y_continuous (limits = c(0,1000), breaks=seq(0, 7000, by=200),expand=c(0,0) ) +
+  scale_x_continuous (expand=c(0,0), limits = c(1519.3,1790.2), breaks = seq(0,2020, by=20))+
+  labs(x = "Year", y="Landings (thousand tonnes)", fill = "Stock")+
+  viridis::scale_fill_viridis(discrete = TRUE, direction = 1, option="inferno")+
+  theme(axis.line = element_line(size = 0.7, colour = "black"),
+        axis.ticks = element_line(size = 1),
+        axis.text = element_text (size = 18, colour = "black"),
+        axis.title = element_text (size = 26, colour = "black"),
+        plot.title = element_text(hjust = 0.5),
+        legend.title=element_text(size=24),
+        legend.text=element_text(size=24),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank())
+
+jpeg("Atlantic cod landings east - hist.jpeg", width = 1400, height = 1400)
+cod_g1 + hist + plot_layout(ncol = 1, heights = c(2.6, 1))
 dev.off()
 
 northern <- read.csv("~Data/Atlantic cod - Northern cod catches.csv", fileEncoding="UTF-8-BOM") #from 10.1093/icesjms/fsab153
