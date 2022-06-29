@@ -88,6 +88,9 @@ pok_g1
 dev.off()
 
 pok_west <- read.csv("Data/pok_west Atlantic.csv")
+#data from https://s3.us-east-1.amazonaws.com/nefmc.org/Prepublication-NE-Grndfsh-10-3-2019.pdf and 
+#https://www.dfo-mpo.gc.ca/stats/commercial/sea-maritimes-eng.htm
+
 
 pok_g2 <- 
   pok_west %>% filter(Year < 2019) %>% mutate(Area = as.factor(Country)) %>% 
